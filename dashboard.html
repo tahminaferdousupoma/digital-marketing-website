@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Private Dashboard — Tahmina Ferdous Upoma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#172221;--muted:#65716e;--green:#b9f36a;--deep:#163c35;--cream:#f7f8f2;--line:#e7eae2;--white:#fff}
+    *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Hind Siliguri','DM Sans',sans-serif}.wrap{width:min(1020px,calc(100% - 36px));margin:auto}.top{padding:22px 0;border-bottom:1px solid var(--line);background:#fff}.top-inner{display:flex;align-items:center;justify-content:space-between}.brand{font:800 20px 'DM Sans',sans-serif;color:var(--ink);text-decoration:none}.brand span{color:#4d8e4c}.back{color:#4a8848;font-weight:700;text-decoration:none;font-size:14px}.main{padding:52px 0 80px}.eyebrow{color:#4f914a;font-size:14px;font-weight:700}.title{font-size:clamp(32px,5vw,48px);line-height:1.15;margin:8px 0}.subtitle{color:var(--muted);margin:0;line-height:1.7}.panel{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:27px;box-shadow:0 14px 38px #20302008}.login{max-width:540px}.field{display:flex;flex-direction:column;gap:7px;margin:20px 0}.field label{font-size:14px;font-weight:700}.field input{font:inherit;font-size:15px;border:1px solid #dce3d8;border-radius:10px;padding:13px;background:#fbfcf9;outline:none}.field input:focus{border-color:#6caa5f;box-shadow:0 0 0 3px #6caa5f20}.button{border:0;border-radius:999px;background:var(--deep);color:white;padding:13px 21px;font:700 15px 'Hind Siliguri',sans-serif;cursor:pointer}.button:disabled{opacity:.65;cursor:wait}.status{min-height:25px;margin:14px 0 0;color:#315f38;font-weight:600}.status.error{color:#a33c31}.hint{font-size:13px;color:var(--muted);line-height:1.6}.hidden{display:none!important}.dash-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.dash-head h2{margin:0;font-size:23px}.count{background:#edf7e7;color:#3e7b3c;padding:6px 12px;border-radius:999px;font-weight:700;font-size:13px}.lead-list{display:grid;gap:14px;margin-top:20px}.lead{border:1px solid var(--line);border-radius:15px;padding:18px}.lead-top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}.lead-name{font-size:18px;font-weight:700}.lead-meta{color:var(--muted);font-size:13px}.lead-service{display:inline-block;margin-top:10px;padding:4px 10px;border-radius:999px;background:#edf7e7;color:#3e7b3c;font-size:12px;font-weight:700}.lead-message{white-space:pre-wrap;line-height:1.65;margin:12px 0 0}.empty{color:var(--muted);padding:25px;text-align:center;background:#fbfcf9;border-radius:12px}.signout{border:1px solid #d8ded5;background:#fff;color:var(--ink);padding:9px 16px;border-radius:999px;font:600 14px 'Hind Siliguri',sans-serif;cursor:pointer}
+    @media(max-width:600px){.main{padding-top:36px}.panel{padding:20px}.lead-top{display:block}.lead-meta{margin-top:4px}}
+  </style>
+</head>
+<body>
+  <header class="top"><div class="wrap top-inner"><a class="brand" href="index.html">Tahmina Ferdous <span>Upoma</span></a><a class="back" href="index.html">← মূল ওয়েবসাইট</a></div></header>
+  <main class="wrap main">
+    <span class="eyebrow">Private dashboard</span>
+    <h1 class="title">Contact requests</h1>
+    <p class="subtitle">আপনার ওয়েবসাইটের contact form থেকে আসা বার্তাগুলো এখানে দেখা যাবে।</p>
+    <section class="panel login" id="login-panel">
+      <h2>আপনার email দিয়ে sign in করুন</h2>
+      <p class="hint">আপনার inbox-এ sign-in link পাঠানো হবে। Contact request দেখতে কেবল অনুমোদিত email-এ sign in করা যাবে।</p>
+      <form id="login-form"><div class="field"><label for="email">Dashboard email</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></div><button class="button" type="submit">Sign-in link পাঠান</button></form>
+      <p class="status" id="login-status" role="status" aria-live="polite"></p>
+    </section>
+    <section class="panel hidden" id="dashboard-panel">
+      <div class="dash-head"><h2>আপনার enquiries</h2><div><span class="count" id="request-count">0টি</span> <button class="signout" id="signout-button" type="button">Sign out</button></div></div>
+      <p class="status" id="dashboard-status" role="status" aria-live="polite"></p>
+      <div class="lead-list" id="lead-list"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://rwehkhhvqfnbzhqoveuj.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_pCQuzQMVaZiT2fkrzvPfpA_mXz9rYNa';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    const loginPanel = document.getElementById('login-panel');
+    const dashboardPanel = document.getElementById('dashboard-panel');
+    const loginForm = document.getElementById('login-form');
+    const loginStatus = document.getElementById('login-status');
+    const dashboardStatus = document.getElementById('dashboard-status');
+    const leadList = document.getElementById('lead-list');
+    const requestCount = document.getElementById('request-count');
+    const signInButton = loginForm.querySelector('button');
+
+    function setStatus(element, message, error = false) {
+      element.textContent = message;
+      element.classList.toggle('error', error);
+    }
+
+    function showLogin(message = '') {
+      loginPanel.classList.remove('hidden');
+      dashboardPanel.classList.add('hidden');
+      if (message) setStatus(loginStatus, message, true);
+    }
+
+    function addText(parent, tag, className, value) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      element.textContent = value;
+      parent.appendChild(element);
+      return element;
+    }
+
+    async function loadRequests() {
+
+      loginPanel.classList.add('hidden');
+      dashboardPanel.classList.remove('hidden');
+      setStatus(dashboardStatus, 'বার্তাগুলো লোড হচ্ছে…');
+      leadList.replaceChildren();
+
+      const { data, error } = await client
+        .from('contact_requests')
+        .select('id, name, email, service, message, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        setStatus(dashboardStatus, 'বার্তা লোড হয়নি। SQL policy ও Supabase সংযোগ পরীক্ষা করুন।', true);
+        return;
+      }
+
+      setStatus(dashboardStatus, '');
+      requestCount.textContent = `${data.length}টি`;
+      if (!data.length) {
+        addText(leadList, 'p', 'empty', 'এখনও কোনো contact request আসেনি।');
+        return;
+      }
+
+      for (const request of data) {
+        const card = document.createElement('article');
+        card.className = 'lead';
+        const top = document.createElement('div');
+        top.className = 'lead-top';
+        const identity = document.createElement('div');
+        addText(identity, 'div', 'lead-name', request.name);
+        const emailLink = document.createElement('a');
+        emailLink.className = 'lead-meta';
+        emailLink.href = `mailto:${encodeURIComponent(request.email)}`;
+        emailLink.textContent = request.email;
+        identity.appendChild(emailLink);
+        top.appendChild(identity);
+        const date = new Date(request.created_at).toLocaleString('bn-BD');
+        addText(top, 'time', 'lead-meta', date);
+        card.appendChild(top);
+        addText(card, 'span', 'lead-service', request.service);
+        addText(card, 'p', 'lead-message', request.message);
+        leadList.appendChild(card);
+      }
+    }
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = loginForm.elements.email.value.trim().toLowerCase();
+      signInButton.disabled = true;
+      setStatus(loginStatus, 'Sign-in link পাঠানো হচ্ছে…');
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.href }
+      });
+      signInButton.disabled = false;
+      setStatus(loginStatus, error ? 'Sign-in link পাঠানো যায়নি। আবার চেষ্টা করুন।' : 'আপনার inbox-এ sign-in link পাঠানো হয়েছে.', Boolean(error));
+    });
+
+    document.getElementById('signout-button').addEventListener('click', async () => {
+      await client.auth.signOut();
+      showLogin();
+    });
+
+    client.auth.onAuthStateChange((_event, session) => {
+      if (session) loadRequests(session);
+    });
+    client.auth.getSession().then(({ data }) => {
+      if (data.session) loadRequests(data.session);
+    });
+  </script>
+</body>
+</html>
